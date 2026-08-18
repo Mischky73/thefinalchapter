@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">The Final Chapter – Standardbild</title>
+  <desc id="desc">Dunkle Ruinensäulen um ein aufgeschlagenes Buch in schwarzer Metal-Ästhetik.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#020304"/>
+      <stop offset="0.48" stop-color="#0a0c0e"/>
+      <stop offset="1" stop-color="#030303"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="50%" cy="54%" r="44%">
+      <stop offset="0" stop-color="#8f1b19" stop-opacity=".48"/>
+      <stop offset=".25" stop-color="#4a0e0e" stop-opacity=".26"/>
+      <stop offset=".72" stop-color="#090a0b" stop-opacity=".05"/>
+      <stop offset="1" stop-color="#000" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="stone" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#050607"/>
+      <stop offset=".28" stop-color="#1c2023"/>
+      <stop offset=".52" stop-color="#32383c"/>
+      <stop offset=".72" stop-color="#111416"/>
+      <stop offset="1" stop-color="#030404"/>
+    </linearGradient>
+    <linearGradient id="pageLeft" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9aa0a2"/>
+      <stop offset=".36" stop-color="#575c5f"/>
+      <stop offset="1" stop-color="#141617"/>
+    </linearGradient>
+    <linearGradient id="pageRight" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#92989b"/>
+      <stop offset=".4" stop-color="#4b5053"/>
+      <stop offset="1" stop-color="#111314"/>
+    </linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16191b"/>
+      <stop offset="1" stop-color="#010101"/>
+    </linearGradient>
+    <filter id="rough" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency=".016 .17" numOctaves="3" seed="17" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0" result="gray"/>
+      <feBlend in="SourceGraphic" in2="gray" mode="soft-light"/>
+    </filter>
+    <filter id="smoke" x="-35%" y="-35%" width="170%" height="170%">
+      <feTurbulence type="fractalNoise" baseFrequency=".009" numOctaves="4" seed="8" result="turb"/>
+      <feDisplacementMap in="SourceGraphic" in2="turb" scale="42"/>
+      <feGaussianBlur stdDeviation="25"/>
+    </filter>
+    <filter id="redGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+    <filter id="shadow" x="-30%" y="-40%" width="160%" height="190%">
+      <feDropShadow dx="0" dy="22" stdDeviation="20" flood-color="#000" flood-opacity=".95"/>
+    </filter>
+    <pattern id="scratches" width="95" height="95" patternUnits="userSpaceOnUse">
+      <path d="M8 86L27 11M56 91L66 32M81 65L90 22" stroke="#d9e0e3" stroke-opacity=".035" stroke-width="2"/>
+      <path d="M2 28L34 23M47 72L88 68" stroke="#000" stroke-opacity=".26" stroke-width="3"/>
+    </pattern>
+    <clipPath id="frameClip"><rect width="1600" height="900" rx="2"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#frameClip)">
+    <rect width="1600" height="900" fill="url(#sky)"/>
+    <rect width="1600" height="900" fill="url(#halo)"/>
+
+    <!-- diffuse smoke banks -->
+    <g opacity=".24" filter="url(#smoke)" fill="#657078">
+      <ellipse cx="405" cy="390" rx="320" ry="110"/>
+      <ellipse cx="1185" cy="340" rx="370" ry="105"/>
+      <ellipse cx="805" cy="270" rx="290" ry="82" opacity=".45"/>
+    </g>
+
+    <!-- distant broken arch -->
+    <path d="M438 522V188h102v57c67-72 159-112 260-112s193 40 260 112v-57h102v334h-88V312c-57-73-159-119-274-119s-217 46-274 119v210z"
+          fill="#0b0d0e" stroke="#30363a" stroke-width="4" opacity=".62" filter="url(#rough)"/>
+    <path d="M533 251c71-79 161-116 267-116 110 0 202 38 273 119" fill="none" stroke="#7a858b" stroke-opacity=".18" stroke-width="5"/>
+
+    <!-- left ruins -->
+    <g filter="url(#rough)">
+      <path d="M75 650V182l45-34 26 25 36-47 45 31 35-15 29 34v474z" fill="url(#stone)" stroke="#3a4145" stroke-width="4"/>
+      <path d="M117 205h131v51H117zM104 278h159v30H104z" fill="#212629" stroke="#4b5358" stroke-opacity=".6" stroke-width="3"/>
+      <path d="M140 308h88v342h-88z" fill="#141719"/>
+      <path d="M151 308v342M217 308v342" stroke="#4f575c" stroke-opacity=".32" stroke-width="5"/>
+      <path d="M46 650V398l28-19 22 20 17-32 30 26v257z" fill="#090b0c" stroke="#2a2f32" stroke-width="4"/>
+    </g>
+
+    <!-- right ruins -->
+    <g filter="url(#rough)">
+      <path d="M1309 650V176l34-34 35 18 25-42 43 46 35-24 44 41v469z" fill="url(#stone)" stroke="#3a4145" stroke-width="4"/>
+      <path d="M1342 204h131v52h-131zM1327 278h159v30h-159z" fill="#212629" stroke="#4b5358" stroke-opacity=".6" stroke-width="3"/>
+      <path d="M1364 308h88v342h-88z" fill="#141719"/>
+      <path d="M1375 308v342M1441 308v342" stroke="#4f575c" stroke-opacity=".32" stroke-width="5"/>
+      <path d="M1483 650V405l27-38 24 31 25-17 18 28v241z" fill="#090b0c" stroke="#2a2f32" stroke-width="4"/>
+    </g>
+
+    <!-- ground and red horizon -->
+    <path d="M0 602c265-36 466-6 650 10 208 18 423-25 623-20 126 3 235 18 327 42v266H0z" fill="url(#ground)"/>
+    <ellipse cx="800" cy="656" rx="330" ry="45" fill="#8e1515" opacity=".3" filter="url(#redGlow)"/>
+    <path d="M505 647c124-17 225-20 294-19 75 0 177 4 301 23" fill="none" stroke="#a52a27" stroke-opacity=".32" stroke-width="3"/>
+
+    <!-- open book -->
+    <g filter="url(#shadow)">
+      <path d="M786 695C676 632 559 613 416 627c44 22 78 57 101 106 99-10 189 9 269 61z" fill="#050606" stroke="#454b4e" stroke-width="6"/>
+      <path d="M814 695c110-63 227-82 370-68-44 22-78 57-101 106-99-10-189 9-269 61z" fill="#050606" stroke="#454b4e" stroke-width="6"/>
+      <path d="M792 678c-110-63-213-76-340-57 49 20 86 51 112 94 88-6 163 10 228 55z" fill="url(#pageLeft)" stroke="#697176" stroke-width="3"/>
+      <path d="M808 678c110-63 213-76 340-57-49 20-86 51-112 94-88-6-163 10-228 55z" fill="url(#pageRight)" stroke="#697176" stroke-width="3"/>
+      <path d="M800 674v108" stroke="#0a0b0c" stroke-width="13"/>
+      <path d="M800 675c-21-16-37-18-59-22M800 675c21-16 37-18 59-22" fill="none" stroke="#aeb4b7" stroke-opacity=".34" stroke-width="2"/>
+      <g stroke="#17191a" stroke-width="3" opacity=".56">
+        <path d="M507 647c84-4 164 13 235 49M525 666c78-2 147 14 207 46M547 687c68 0 126 13 176 39"/>
+        <path d="M1093 647c-84-4-164 13-235 49M1075 666c-78-2-147 14-207 46M1053 687c-68 0-126 13-176 39"/>
+      </g>
+    </g>
+
+    <!-- embers/dust -->
+    <g fill="#a83a30" opacity=".58">
+      <circle cx="532" cy="558" r="3"/><circle cx="590" cy="518" r="2"/><circle cx="680" cy="575" r="2.5"/>
+      <circle cx="928" cy="538" r="2"/><circle cx="1048" cy="562" r="3"/><circle cx="1115" cy="505" r="2"/>
+    </g>
+    <g fill="#cbd1d4" opacity=".22">
+      <circle cx="369" cy="337" r="2"/><circle cx="635" cy="286" r="1.5"/><circle cx="843" cy="354" r="2"/>
+      <circle cx="1015" cy="272" r="1.5"/><circle cx="1245" cy="394" r="2"/>
+    </g>
+
+    <rect width="1600" height="900" fill="url(#scratches)" opacity=".7"/>
+    <rect x="14" y="14" width="1572" height="872" fill="none" stroke="#8f9aa0" stroke-opacity=".16" stroke-width="2"/>
+    <rect x="25" y="25" width="1550" height="850" fill="none" stroke="#000" stroke-opacity=".85" stroke-width="16"/>
+    <rect width="1600" height="900" fill="none" stroke="#000" stroke-width="70" opacity=".42"/>
+  </g>
+</svg>

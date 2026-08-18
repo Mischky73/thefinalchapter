@@ -1,0 +1,69 @@
+Options -Indexes
+Options -MultiViews
+
+RewriteEngine On
+RewriteBase /
+
+# Datenbank-, Konfigurations-, Sicherungs- und Shell-Dateien nie ausliefern.
+<FilesMatch "(?i)\.(sql|sh|env|ini|log|bak|dist|md)$">
+    Require all denied
+</FilesMatch>
+
+# ── HTTPS erzwingen ───────────────────────────────────────────
+# Cloudflare Tunnel spricht intern per HTTP mit Apache, übermittelt aber
+# das ursprüngliche Protokoll als X-Forwarded-Proto. So entsteht keine
+# Redirect-Schleife hinter dem Tunnel.
+RewriteCond %{HTTP:X-Forwarded-Proto} !^https$ [NC]
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ── www. → ohne www ───────────────────────────────────────────
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+
+# ── Statische Dateien direkt ausliefern ───────────────────────
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ── SEO-URLs ─────────────────────────────────────────────────
+# /artikel/mein-slug → article.php?slug=mein-slug
+RewriteRule ^artikel/([a-z0-9\-]+)/?$ article.php?slug=$1 [L,QSA]
+
+# /kategorie/mein-slug → category.php?slug=mein-slug
+RewriteRule ^kategorie/([a-z0-9\-]+)/?$ category.php?slug=$1 [L,QSA]
+
+# ── Sicherheit ───────────────────────────────────────────────
+# Kein direkter Zugriff auf includes/
+RewriteRule ^includes/ - [F,L]
+
+# Keine PHP-Dateien im Uploads-Ordner ausführen
+RewriteRule ^uploads/.*\.php$ - [F,L]
+RewriteRule ^assets/img/uploads/.*\.php$ - [F,L]
+
+# Lokale Entwicklungs-, Import- und Installationswerkzeuge nie ausliefern
+RewriteRule ^(?:tests|import|migrations)/ - [F,L]
+RewriteRule ^(?:install_hash|import_wordpress|gen_bg_trigger)\.php$ - [F,L]
+
+# ── PHP-Fehler im Produktivbetrieb ausblenden ────────────────
+php_flag display_errors Off
+php_value error_log /proc/self/fd/2
+
+# ── Sicherheits-Header ───────────────────────────────────────
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ── Browser-Caching ───────────────────────────────────────────
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+</IfModule>

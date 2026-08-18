@@ -1,0 +1,70 @@
+# Secrets / local config
+.env
+.env.*
+*.env
+includes/config.php
+includes/config.*.php
+config.php
+
+# Runtime/user generated media and imports
+assets/img/uploads/
+uploads/
+drafts/
+
+# Databases, dumps, archives, backups
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.bak
+*.backup
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+*.rar
+
+# Deploy/runtime temp files
+tfc-deploy/
+auto-deploy/
+tmp/
+temp/
+*.log
+*.pid
+
+# Dependencies / caches
+vendor/
+node_modules/
+.cache/
+.phpunit.cache/
+coverage/
+__pycache__/
+*.pyc
+*.pyo
+
+# Local scratch/rewrite payloads
+import/.*
+backups/
+*_backup.json
+*-backup.json
+
+# OS/editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Local generated previews
+*_preview/
+
+# One-off install/admin helper scripts
+install_hash.php
+
+# Large local research/import datasets (keep local, do not push)
+research/
+import/*.json
+import/*.xml
