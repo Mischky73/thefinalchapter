@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  php-lint-and-smoke-tests:
+    name: PHP lint and smoke tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, dom, pdo, pdo_mysql
+          coverage: none
+
+      - name: Create CI config without secrets
+        run: |
+          cat > includes/config.php <<'PHP'
+          <?php
+          define('DB_HOST', '127.0.0.1');
+          define('DB_NAME', 'thefinalchapter_ci');
+          define('DB_USER', 'root');
+          define('DB_PASS', '');
+          define('DB_CHARSET', 'utf8mb4');
+          define('SITE_URL', 'http://127.0.0.1');
+          define('SITE_NAME', 'The Final Chapter');
+          date_default_timezone_set('Europe/Berlin');
+          PHP
+
+      - name: PHP syntax check tracked files
+        run: |
+          set -euo pipefail
+          while IFS= read -r file; do
+            php -l "$file" >/dev/null
+          done < <(git ls-files '*.php')
+
+      - name: Static/security smoke tests
+        run: |
+          set -euo pipefail
+          php tests/deployment_security_test.php
+          php tests/public_footer_test.php
+          php tests/datenschutz_test.php
+          php tests/impressum_test.php
+
+      - name: Guard ignored sensitive/runtime paths
+        run: |
+          set -euo pipefail
+          ! git ls-files | grep -E '(^includes/config(\..*)?\.php$|^\.env|assets/img/uploads/|^research/|^backups/|\.pyc$|__pycache__|\.tar\.gz$|\.zip$|install_hash\.php|import/.*\.json$|import/.*\.xml$)'
