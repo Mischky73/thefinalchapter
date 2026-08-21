@@ -102,6 +102,38 @@ thefinalchapter/
 
 ---
 
+## Betriebswerkzeuge
+
+### Live-Backup lokal erstellen
+
+Die Skripte unter `tools/` erstellen ein lokales Backup der Live-Instanz über den vorhandenen Auto-Deploy-Runner:
+
+```bash
+python3 tools/tfc_live_backup_bg.py
+```
+
+Gesichert werden:
+
+- Live-Datenbank als `database.sql.gz`
+- Live-Uploads aus `assets/img/uploads` als `uploads.tar.gz`, sofern vorhanden
+- lokale Prüfsummen in `SHA256SUMS`
+
+Ablageort:
+
+```text
+/home/michael/tfc-backups/<YYYYMMDD-HHMMSS>/
+```
+
+Sicherheitsregeln:
+
+- Das Skript erzeugt pro Lauf einen frischen Token.
+- Der temporäre PHP-Endpunkt ist token-geschützt.
+- Nach Abschluss wird der Endpunkt auf HTTP 410 neutralisiert.
+- Es werden keine Zugangsdaten ausgegeben oder ins Repository geschrieben.
+- Ein Backup ist noch keine Wiederherstellung: Restore nur mit separatem Plan und niemals durch Überschreiben der Produktionsdatenbank im Rahmen eines Code-Deployments.
+
+---
+
 ## Passwort ändern (CLI)
 
 ```php
