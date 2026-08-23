@@ -3,16 +3,18 @@ require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/functions.php';
 
-$q      = trim($_GET['q'] ?? '');
-$page   = max(1, (int)($_GET['page'] ?? 1));
+$q      = normalizeSearchQuery((string)($_GET['q'] ?? ''));
+$pageParam = $_GET['page'] ?? 1;
+$page   = is_array($pageParam) ? 1 : max(1, (int)$pageParam);
 $perPage = ARTICLES_PER_PAGE;
 $offset = ($page - 1) * $perPage;
 
 $results = [];
 $total   = 0;
 $pag     = null;
+$searchTooShort = $q !== '' && !isSearchQueryLongEnough($q);
 
-if ($q !== '') {
+if ($q !== '' && !$searchTooShort) {
     $total   = countSearchResults($q);
     $pag     = paginate($total, $perPage, $page);
     $results = searchArticles($q, $perPage, $offset);
@@ -58,7 +60,7 @@ require_once __DIR__ . '/includes/partials/header.php';
           <button type="submit" class="search-submit-large">Suchen</button>
         </form>
 
-        <?php if ($q !== ''): ?>
+        <?php if ($q !== '' && !$searchTooShort): ?>
         <p class="search-results-info">
           <?php if ($total > 0): ?>
             <strong><?= $total ?></strong> Ergebnis<?= $total !== 1 ? 'se' : '' ?> für
@@ -79,6 +81,13 @@ require_once __DIR__ . '/includes/partials/header.php';
           <div class="search-empty-icon">🔍</div>
           <h2>Was suchst du?</h2>
           <p>Gib einen Suchbegriff ein, um Beiträge zu finden.</p>
+        </div>
+
+      <?php elseif ($searchTooShort): ?>
+        <div class="search-empty">
+          <div class="search-empty-icon">🔍</div>
+          <h2>Suchbegriff zu kurz</h2>
+          <p>Bitte gib mindestens zwei Zeichen ein.</p>
         </div>
 
       <?php elseif (empty($results)): ?>

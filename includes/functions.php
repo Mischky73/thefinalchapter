@@ -1092,30 +1092,73 @@ function deleteCategory(int $id): bool {
 
 // ---- Suche ----
 
+function normalizeSearchQuery(string $q): string {
+    $q = trim(preg_replace('/\s+/u', ' ', $q) ?? '');
+    return mb_substr($q, 0, 80);
+}
+
+function isSearchQueryLongEnough(string $q): bool {
+    return mb_strlen(normalizeSearchQuery($q)) >= 2;
+}
+
 function searchArticles(string $q, int $limit = 20, int $offset = 0): array {
-    $db   = getDB();
-    $like = '%' . $q . '%';
+    $q = normalizeSearchQuery($q);
+    if (!isSearchQueryLongEnough($q)) {
+        return [];
+    }
+
+    $db           = getDB();
+    $like         = '%' . $q . '%';
+    $limit        = max(1, min(50, $limit));
+    $offset       = max(0, $offset);
+    $recentWindow = 750;
+
     $stmt = $db->prepare(
         'SELECT a.*, c.name AS category_name, c.slug AS category_slug
-         FROM articles a
-         JOIN categories c ON a.category_id = c.id
-         WHERE a.status = "published"
-           AND (a.title LIKE ? OR a.content LIKE ? OR a.excerpt LIKE ?)
-         ORDER BY a.created_at DESC
+         FROM (
+           SELECT id, title, excerpt, author, category_id, created_at
+           FROM articles
+           WHERE status = "published"
+           ORDER BY created_at DESC
+           LIMIT ' . $recentWindow . '
+         ) r
+         JOIN articles a ON a.id = r.id
+         JOIN categories c ON r.category_id = c.id
+         WHERE r.title LIKE ?
+            OR r.excerpt LIKE ?
+            OR r.author LIKE ?
+            OR c.name LIKE ?
+         ORDER BY r.created_at DESC
          LIMIT ? OFFSET ?'
     );
-    $stmt->execute([$like, $like, $like, $limit, $offset]);
+    $stmt->execute([$like, $like, $like, $like, $limit, $offset]);
     return $stmt->fetchAll();
 }
 
 function countSearchResults(string $q): int {
+    $q = normalizeSearchQuery($q);
+    if (!isSearchQueryLongEnough($q)) {
+        return 0;
+    }
+
     $like = '%' . $q . '%';
+    $recentWindow = 750;
     $stmt = getDB()->prepare(
-        'SELECT COUNT(*) FROM articles
-         WHERE status = "published"
-           AND (title LIKE ? OR content LIKE ? OR excerpt LIKE ?)'
+        'SELECT COUNT(*)
+         FROM (
+           SELECT title, excerpt, author, category_id
+           FROM articles
+           WHERE status = "published"
+           ORDER BY created_at DESC
+           LIMIT ' . $recentWindow . '
+         ) r
+         JOIN categories c ON r.category_id = c.id
+         WHERE r.title LIKE ?
+            OR r.excerpt LIKE ?
+            OR r.author LIKE ?
+            OR c.name LIKE ?'
     );
-    $stmt->execute([$like, $like, $like]);
+    $stmt->execute([$like, $like, $like, $like]);
     return (int)$stmt->fetchColumn();
 }
 
